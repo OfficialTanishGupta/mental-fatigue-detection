@@ -2,6 +2,9 @@ import streamlit as st
 import joblib
 import numpy as np
 import os
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn.metrics import confusion_matrix, classification_report
 
 # ------------------ Page Config ------------------
 st.set_page_config(
@@ -10,70 +13,99 @@ st.set_page_config(
     layout="centered"
 )
 
-# ------------------ Load Model Safely ------------------
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
+# ------------------ Load Model & Files ------------------
 model = joblib.load(os.path.join(BASE_DIR, "model", "fatigue_model.pkl"))
 encoder = joblib.load(os.path.join(BASE_DIR, "model", "label_encoder.pkl"))
 
+evaluation_path = os.path.join(BASE_DIR, "model", "evaluation_report.txt")
+feature_path = os.path.join(BASE_DIR, "model", "feature_importance.csv")
+
 # ------------------ Title ------------------
 st.title("🧠 Mental Fatigue Detection System")
-st.write("Predict your mental fatigue level based on daily habits.")
+st.write("An ML-powered system with model evaluation and insights.")
 
-# ------------------ Inputs ------------------
-with st.expander("📊 Enter Your Daily Habits"):
-    sleep = st.slider("Sleep Hours", 4, 9, 7)
-    screen = st.slider("Screen Time (hrs/day)", 1, 12, 5)
-    work = st.slider("Work/Study Hours", 1, 12, 6)
-    breaks = st.slider("Breaks per day", 1, 10, 4)
-    activity = st.slider("Physical Activity (mins)", 0, 60, 30)
-    caffeine = st.slider("Caffeine Intake (cups)", 0, 5, 2)
+# ------------------ Sidebar ------------------
+st.sidebar.header("📊 Navigation")
+option = st.sidebar.radio(
+    "Select View",
+    ["Prediction", "Model Evaluation"]
+)
 
-# ------------------ Prediction ------------------
-if st.button("🔍 Predict Fatigue Level"):
-    input_data = np.array([[sleep, screen, work, breaks, activity, caffeine]])
+# ------------------ PREDICTION VIEW ------------------
+if option == "Prediction":
+    with st.expander("📥 Enter Daily Habits"):
+        sleep = st.slider("Sleep Hours", 4, 9, 7)
+        screen = st.slider("Screen Time (hrs)", 1, 12, 5)
+        work = st.slider("Work/Study Hours", 1, 12, 6)
+        breaks = st.slider("Breaks per day", 1, 10, 4)
+        activity = st.slider("Physical Activity (mins)", 0, 60, 30)
+        caffeine = st.slider("Caffeine Intake (cups)", 0, 5, 2)
 
-    prediction = model.predict(input_data)
-    probabilities = model.predict_proba(input_data)[0]
+    if st.button("🔍 Predict Fatigue"):
+        input_data = np.array([[sleep, screen, work, breaks, activity, caffeine]])
 
-    fatigue_label = encoder.inverse_transform(prediction)[0]
-    fatigue_score = int(max(probabilities) * 100)
+        prediction = model.predict(input_data)
+        probabilities = model.predict_proba(input_data)[0]
 
-    # ------------------ Results ------------------
-    st.metric("Fatigue Score", f"{fatigue_score} / 100")
+        fatigue_label = encoder.inverse_transform(prediction)[0]
+        fatigue_score = int(max(probabilities) * 100)
 
-    if fatigue_label == "High":
-        st.error("Fatigue Level: HIGH")
-    elif fatigue_label == "Medium":
-        st.warning("Fatigue Level: MEDIUM")
-    else:
-        st.success("Fatigue Level: LOW")
+        st.metric("Fatigue Score", f"{fatigue_score} / 100")
 
-    # ------------------ Analysis ------------------
-    st.subheader("🔍 Analysis")
-    if sleep < 6:
-        st.write("• Low sleep duration may increase fatigue.")
-    if screen > 7:
-        st.write("• High screen time contributes to mental strain.")
-    if breaks < 3:
-        st.write("• Taking fewer breaks reduces recovery time.")
-    if activity < 20:
-        st.write("• Low physical activity affects mental freshness.")
+        if fatigue_label == "High":
+            st.error("Fatigue Level: HIGH")
+        elif fatigue_label == "Medium":
+            st.warning("Fatigue Level: MEDIUM")
+        else:
+            st.success("Fatigue Level: LOW")
 
-    # ------------------ Recommendations ------------------
-    st.subheader("💡 Recommendations")
+# ------------------ MODEL EVALUATION VIEW ------------------
+if option == "Model Evaluation":
 
-    if fatigue_label == "High":
-        st.write("✔ Aim for 7–8 hours of quality sleep")
-        st.write("✔ Reduce screen exposure, especially before bedtime")
-        st.write("✔ Take frequent short breaks during work")
-        st.write("✔ Add light physical activity like walking or stretching")
+    st.subheader("📈 Model Accuracy & Report")
 
-    elif fatigue_label == "Medium":
-        st.write("✔ Maintain consistent sleep routine")
-        st.write("✔ Balance work with regular breaks")
-        st.write("✔ Limit caffeine intake late in the day")
+    # Read evaluation report
+    with open(evaluation_path, "r") as f:
+        st.text(f.read())
 
-    else:
-        st.write("✔ Keep maintaining healthy daily habits")
-        st.write("✔ Stay consistent with sleep and activity levels")
+    # ------------------ Confusion Matrix ------------------
+    st.subheader("🔢 Confusion Matrix")
+
+    # Load dataset to recreate test split
+    data = pd.read_csv(os.path.join(BASE_DIR, "data", "fatigue_data.csv"))
+    X = data.drop("fatigue_level", axis=1)
+    y = encoder.transform(data["fatigue_level"])
+
+    y_pred = model.predict(X)
+    cm = confusion_matrix(y, y_pred)
+
+    fig, ax = plt.subplots()
+    ax.imshow(cm)
+    ax.set_title("Confusion Matrix")
+    ax.set_xlabel("Predicted")
+    ax.set_ylabel("Actual")
+    ax.set_xticks(range(len(encoder.classes_)))
+    ax.set_yticks(range(len(encoder.classes_)))
+    ax.set_xticklabels(encoder.classes_)
+    ax.set_yticklabels(encoder.classes_)
+
+    for i in range(len(cm)):
+        for j in range(len(cm)):
+            ax.text(j, i, cm[i, j], ha="center", va="center")
+
+    st.pyplot(fig)
+
+    # ------------------ Feature Importance ------------------
+    st.subheader("📊 Feature Importance")
+
+    feature_df = pd.read_csv(feature_path)
+    feature_df = feature_df.sort_values(by="importance", ascending=True)
+
+    fig2, ax2 = plt.subplots()
+    ax2.barh(feature_df["feature"], feature_df["importance"])
+    ax2.set_xlabel("Importance Score")
+    ax2.set_title("Feature Importance")
+
+    st.pyplot(fig2)
