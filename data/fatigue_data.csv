@@ -1,0 +1,7 @@
+sleep_hours,screen_time,work_hours,breaks,physical_activity,caffeine_intake,fatigue_level
+8,4,5,6,40,1,Low
+7,5,6,5,30,1,Low
+6,7,8,3,20,2,Medium
+5,9,10,2,10,3,High
+6,8,9,2,15,3,High
+7,6,7,4,25,2,Medium
