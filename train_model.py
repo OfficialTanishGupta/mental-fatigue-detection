@@ -53,6 +53,16 @@ with open("model/evaluation_report.txt", "w") as f:
     f.write(report)
     f.write("\nConfusion Matrix:\n")
     f.write(str(conf_matrix))
+    
+    
+# Save feature importance
+feature_importance = pd.DataFrame({
+    "feature": X.columns,
+    "importance": model.feature_importances_
+})
+
+feature_importance.to_csv("model/feature_importance.csv", index=False)
+
 
 # Print results
 print("✅ Model trained successfully")
@@ -61,3 +71,5 @@ print("\n📄 Classification Report:")
 print(report)
 print("🔢 Confusion Matrix:")
 print(conf_matrix)
+
+
