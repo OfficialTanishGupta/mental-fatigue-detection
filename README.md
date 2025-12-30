@@ -1,24 +1,24 @@
+<img src="screenshots/home.png" width="50%" />
+
 🧠 AI Mental Fatigue Detection System
 
-A machine learning–powered web application that predicts mental fatigue levels (Low, Medium, High) based on daily behavioral patterns such as sleep, screen time, work hours, physical activity, and caffeine intake.
+A machine learning–powered web application that predicts mental fatigue levels (Low, Medium, High) using daily behavioral patterns such as sleep, screen time, work hours, physical activity, and caffeine intake.
 The application also provides model evaluation metrics and visual insights to ensure transparency and interpretability.
 
 🔗 Live App: https://mental-fatigue-detection.streamlit.app/
 
 📌 Project Overview
 
-Mental fatigue is a common issue affecting productivity, focus, and overall well-being.
-This project aims to demonstrate how machine learning can be applied to behavioral data to:
+Mental fatigue significantly impacts productivity, focus, and overall well-being.
+This project demonstrates how machine learning can be applied to behavioral data to build an end-to-end, deployable AI system.
 
-Predict mental fatigue levels
+The system is:
 
-Provide interpretable insights
+Beginner-friendly
 
-Visualize model performance
+Professionally structured
 
-Deliver a clean, deployable ML application
-
-The system is designed to be beginner-friendly, yet professionally structured, making it suitable for learning, portfolios, and interviews.
+Suitable for learning, portfolios, and interviews
 
 🎯 Key Features
 
@@ -69,6 +69,12 @@ mental-fatigue-detection/
 │ ├── label_encoder.pkl # Label encoder
 │ ├── evaluation_report.txt # Accuracy & classification report
 │ └── feature_importance.csv # Feature importance values
+│
+├── screenshots/
+│ ├── home.png
+│ ├── prediction.png
+│ ├── evaluation.png
+│ └── feature_importance.png
 
 📊 Dataset Description
 
@@ -76,7 +82,7 @@ The dataset is synthetically generated using rule-based logic to simulate realis
 
 Contains 600+ samples
 
-Features include:
+Features:
 
 Sleep hours
 
@@ -90,11 +96,11 @@ Physical activity
 
 Caffeine intake
 
-Target variable:
+Target Variable:
 
 fatigue_level → Low / Medium / High
 
-⚠️ Note: Synthetic data is commonly used in academic and learning projects when real-world datasets are unavailable.
+⚠️ Synthetic datasets are commonly used in academic and learning projects when real-world data is unavailable.
 
 🧠 Machine Learning Approach
 
@@ -102,13 +108,13 @@ Problem Type: Multi-class Classification
 
 Model Used: Random Forest Classifier
 
-Reason for choice:
+Why Random Forest?
 
 Handles non-linear relationships well
 
 Robust to noise
 
-Provides feature importance (interpretability)
+Provides feature importance for interpretability
 
 📈 Model Evaluation
 
@@ -132,7 +138,7 @@ This ensures transparent and explainable ML behavior, not just predictions.
 
 🌐 Web Application (Streamlit)
 
-The Streamlit app provides two main views:
+The application provides two main views:
 
 🔹 Prediction View
 
@@ -144,15 +150,31 @@ Displays fatigue score and recommendations
 
 🔹 Model Evaluation View
 
-Shows classification report
+Classification report
 
 Confusion matrix visualization
 
 Feature importance chart
 
+📸 Application Screenshots
+
+<p align="center">
+  <img src="screenshots/home.png" width="45%" />
+  <img src="screenshots/prediction.png" width="45%" />
+</p>
+
+<p align="center">
+  <img src="screenshots/evaluation.png" width="45%" />
+  <img src="screenshots/feature_importance.png" width="45%" />
+</p>
+
+<p align="center">
+  <b>Real screenshots from the deployed Streamlit application</b>
+</p>
+
 🚀 Deployment
 
-The application is deployed using Streamlit Cloud, making it accessible without any local setup.
+The application is deployed on Streamlit Cloud, making it accessible without any local setup.
 
 🔗 Live URL:
 👉 https://mental-fatigue-detection.streamlit.app/
@@ -185,24 +207,15 @@ streamlit run app.py
 
 🧪 Future Improvements
 
-Add real-world dataset integration
+Integrate real-world datasets
 
 Time-series fatigue tracking
 
-User authentication and history
+User authentication & history
 
 Advanced visualizations
 
 Mobile-friendly UI
-
-📸 Application Screenshots
-🔹 Home & User Input Interface
-
-🔹 Fatigue Prediction Output
-
-🔹 Model Evaluation Dashboard
-
-🔹 Feature Importance Visualization
 
 👤 Author
 
