@@ -1,5 +1,3 @@
-<img src="screenshots/home.png" width="50%" />
-
 🧠 AI Mental Fatigue Detection System
 
 A machine learning–powered web application that predicts mental fatigue levels (Low, Medium, High) using daily behavioral patterns such as sleep, screen time, work hours, physical activity, and caffeine intake.
